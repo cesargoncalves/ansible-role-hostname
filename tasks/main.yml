@@ -1,0 +1,13 @@
+---
+- name: Ensure hostname is correct.
+  ansible.builtin.hostname:
+    name: "{{ hostname_fqdn }}"
+  notify: Reboot server
+
+- name: Ensure /etc/hosts is valid.
+  ansible.builtin.lineinfile:
+    dest: /etc/hosts
+    regexp: '^127\.0\.1\.1'
+    line: "127.0.1.1\t{{ hostname_fqdn }}"
+    state: present
+  when: ansible_os_family == 'Debian'
